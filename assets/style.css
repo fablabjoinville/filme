@@ -1,0 +1,172 @@
+:root {
+    --blood-red: #8a0303;
+    --dark-shadow: #1a0000;
+    --pale-skin: #f8f0e3;
+    --eerie-glow: #ff6b6b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background-color: black;
+    color: var(--pale-skin);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-image: url('https://images.unsplash.com/photo-1533240332313-0db49b459ad6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+}
+
+.container {
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--blood-red);
+    text-shadow: 0 0 10px var(--eerie-glow), 0 0 20px var(--eerie-glow);
+    animation: pulse 4s infinite;
+}
+
+@keyframes pulse {
+    0% { text-shadow: 0 0 10px var(--eerie-glow), 0 0 20px var(--eerie-glow); }
+    50% { text-shadow: 0 0 15px var(--eerie-glow), 0 0 30px var(--eerie-glow); }
+    100% { text-shadow: 0 0 10px var(--eerie-glow), 0 0 20px var(--eerie-glow); }
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+    opacity: 0.8;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .buttons {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+.btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: transparent;
+    color: var(--pale-skin);
+    border: 2px solid var(--blood-red);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-width: 200px;
+}
+
+.btn:hover {
+    background-color: var(--blood-red);
+    box-shadow: 0 0 20px var(--blood-red);
+    transform: translateY(-3px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.message {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    padding: 20px;
+    border: 1px solid var(--blood-red);
+    background-color: rgba(0, 0, 0, 0.7);
+    max-width: 600px;
+    opacity: 0;
+    transition: opacity 1s ease;
+    position: relative;
+}
+
+.message.show {
+    opacity: 1;
+}
+
+.blood-drip {
+    position: absolute;
+    top: 0;
+    width: 10px;
+    height: 0;
+    background-color: var(--blood-red);
+    animation: drip 3s ease-in forwards;
+    z-index: -1;
+}
+
+@keyframes drip {
+    0% { height: 0; }
+    100% { height: 100px; }
+}
+
+.flicker {
+    animation: flicker 5s infinite alternate;
+}
+
+@keyframes flicker {
+    0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+        opacity: 0.99;
+    }
+    20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+        opacity: 0.4;
+    }
+}
+
+footer {
+    margin-top: 3rem;
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+/* Shake animation */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
