@@ -54,32 +54,41 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function showMessage() {
-        // Set the message text
-        message.innerHTML = "O destino de Lian foi escolhido.";
+        resetMessageElement();
+        animateMessage();
+        typeWriterEffect();
+        playHeartbeatSound();
+    }
 
-        // Clear previous message styling
+    function resetMessageElement() {
         message.className = 'message';
         void message.offsetWidth; // Trigger reflow
+    }
 
-        // Add show class with slight delay for effect
+    function animateMessage() {
         setTimeout(() => {
             message.classList.add('show');
         }, 100);
+    }
 
-        // Add typing effect
-        const text = message.innerHTML;
+    function typeWriterEffect() {
+        const messageText = "O destino de Lian foi escolhido.";
+
         message.innerHTML = '';
         let i = 0;
+        const typeSpeed = 30;
+
         const typeWriter = setInterval(() => {
-            if (i < text.length) {
-                message.innerHTML += text.charAt(i);
+            if (i < messageText.length) {
+                message.innerHTML += messageText.charAt(i);
                 i++;
             } else {
                 clearInterval(typeWriter);
             }
-        }, 30);
+        }, typeSpeed);
+    }
 
-        // Add heartbeat sound effect
+    function playHeartbeatSound() {
         const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-horror-deep-drum-heartbeat-518.mp3');
         audio.volume = 0.3;
         audio.play().catch(e => console.log('Audio play failed:', e));
