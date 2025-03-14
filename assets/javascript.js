@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const btnLeft = document.getElementById('btnLeft');
-    const btnRight = document.getElementById('btnRight');
-    const message = document.getElementById('message');
+    const BTN_LEFT_ELEM = document.getElementById('btnLeft');
+    const BTN_RIGHT_ELEM = document.getElementById('btnRight');
+    const MESSAGE_ELEM = document.getElementById('message');
 
     // Add blood drips randomly
     function addBloodDrips() {
-        const container = document.querySelector('.container');
+        const CONTAINER_ELEM = document.querySelector('.container');
         const numDrips = Math.floor(Math.random() * 5) + 3;
 
         for (let i = 0; i < numDrips; i++) {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             drip.classList.add('blood-drip');
             drip.style.left = `${Math.random() * 100}%`;
             drip.style.animationDelay = `${Math.random() * 2}s`;
-            container.appendChild(drip);
+            CONTAINER_ELEM.appendChild(drip);
 
             // Remove drip after animation
             setTimeout(() => {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(addBloodDrips, 8000);
 
     // Button click handlers
-    btnLeft.addEventListener('click', function() {
+    BTN_LEFT_ELEM.addEventListener('click', function() {
         showMessage();
 
         // Add screen shake effect
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     });
 
-    btnRight.addEventListener('click', function() {
+    BTN_RIGHT_ELEM.addEventListener('click', function() {
         showMessage();
 
         // Add flicker effect
@@ -61,26 +61,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function resetMessageElement() {
-        message.className = 'message';
-        void message.offsetWidth; // Trigger reflow
+        MESSAGE_ELEM.className = 'message';
+        void MESSAGE_ELEM.offsetWidth; // Trigger reflow
     }
 
     function animateMessage() {
         setTimeout(() => {
-            message.classList.add('show');
+            MESSAGE_ELEM.classList.add('show');
         }, 100);
     }
 
     function typeWriterEffect() {
         const messageText = "O destino de Lian foi escolhido.";
 
-        message.innerHTML = '';
+        MESSAGE_ELEM.innerHTML = '';
         let i = 0;
         const typeSpeed = 30;
 
         const typeWriter = setInterval(() => {
             if (i < messageText.length) {
-                message.innerHTML += messageText.charAt(i);
+                MESSAGE_ELEM.innerHTML += messageText.charAt(i);
                 i++;
             } else {
                 clearInterval(typeWriter);
