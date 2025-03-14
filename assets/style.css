@@ -338,3 +338,69 @@ footer {
         text-align: center;
     }
 }
+
+/* Connection status styles for admin page */
+.connection-status {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-label {
+    font-weight: bold;
+}
+
+#connectionStatus {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+#connectionStatus.success {
+    background-color: rgba(0, 128, 0, 0.2);
+    color: #00ff00;
+    border: 1px solid #00aa00;
+}
+
+#connectionStatus.error {
+    background-color: rgba(128, 0, 0, 0.2);
+    color: #ff6666;
+    border: 1px solid #aa0000;
+}
+
+#connectionStatus.pending {
+    background-color: rgba(128, 128, 0, 0.2);
+    color: #ffff00;
+    border: 1px solid #aaaa00;
+}
+
+/* Connection status for voter page */
+.connection-indicator {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #aaa;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+    border: 1px solid #333;
+}
+
+.connection-indicator.show {
+    opacity: 1;
+}
+
+.connection-indicator.error {
+    background-color: rgba(70, 0, 0, 0.9);
+    color: #ff6666;
+    border-color: #aa0000;
+}

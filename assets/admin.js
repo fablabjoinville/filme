@@ -10,14 +10,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const exportDataBtn = document.getElementById('exportDataBtn');
     const clearLogBtn = document.getElementById('clearLogBtn');
     const exportLogBtn = document.getElementById('exportLogBtn');
+    const connectionStatusElem = document.getElementById('connectionStatus');
+
+    // Connection status
+    let connectionStatus = 'Initializing';
+    updateConnectionStatus('Initializing', 'pending');
 
     // Vote tracking
     let voteData = {
         left: 0,
         right: 0,
         peers: new Map(), // Will store peer IDs and their votes
-        adminId: generateUniqueId('admin') // Use shared function instead of generateAdminId
+        adminId: 'futuros-admin-dashboard' // Constant admin ID
     };
+
+    // Initialize PeerJS
+    let peer;
+    let reconnectAttempts = 0;
+    const MAX_RECONNECT_ATTEMPTS = 5;
+    const RECONNECT_DELAY = 5000;
+    initPeer();
 
     // Initialize admin peer ID display
     adminPeerIdElem.textContent = voteData.adminId;
@@ -30,6 +42,140 @@ document.addEventListener('DOMContentLoaded', function() {
     exportDataBtn.addEventListener('click', exportVoteData);
     clearLogBtn.addEventListener('click', clearLog);
     exportLogBtn.addEventListener('click', exportLog);
+
+    // Function to update connection status display
+    function updateConnectionStatus(status, type = 'normal') {
+        connectionStatus = status;
+        connectionStatusElem.textContent = status;
+
+        // Remove all status classes and add the current one
+        connectionStatusElem.className = '';
+        connectionStatusElem.classList.add(type);
+    }
+
+    // Function to initialize PeerJS
+    function initPeer() {
+        updateConnectionStatus('Connecting to PeerJS server...', 'pending');
+
+        peer = new Peer(voteData.adminId, {
+            host: '0.peerjs.com',
+            key: 'futuros-filme',
+            secure: true,
+            port: 443,
+            path: '/',
+            debug: 1,
+            config: {
+                "iceServers": [{ "urls": "stun:stun2.1.google.com:19302" }],
+                'iceCandidatePoolSize': 10
+            }
+        });
+
+        peer.on('open', function(id) {
+            reconnectAttempts = 0;
+            addLogEntry('PeerJS connection established with ID: ' + id, 'connect');
+            adminPeerIdElem.textContent = id;
+            updateConnectionStatus('Connected', 'success');
+        });
+
+        peer.on('error', function(err) {
+            console.error('PeerJS error:', err);
+
+            addLogEntry('PeerJS error: ' + err.type, 'error');
+
+            // Update status based on error type
+            let errorMessage = 'Connection error: ' + err.type;
+            updateConnectionStatus(errorMessage, 'error');
+
+            // If the server connection failed, try to reconnect after a delay
+            if (['server-error', 'network', 'unavailable-id', 'socket-error'].includes(err.type)) {
+                // Destroy the peer object
+                if (peer) {
+                    peer.destroy();
+                }
+
+                reconnectAttempts++;
+
+                if (reconnectAttempts <= MAX_RECONNECT_ATTEMPTS) {
+                    const delay = RECONNECT_DELAY * Math.min(reconnectAttempts, 3);
+                    updateConnectionStatus(`Reconnecting in ${delay/1000}s (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`, 'pending');
+                    addLogEntry(`Reconnecting in ${delay/1000} seconds (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`, 'connect');
+
+                    setTimeout(initPeer, delay);
+                } else {
+                    updateConnectionStatus('Max reconnection attempts reached. Please refresh the page.', 'error');
+                    addLogEntry('Max reconnection attempts reached. Please refresh the page.', 'error');
+                }
+            }
+        });
+
+        peer.on('connection', function(conn) {
+            const peerId = conn.peer;
+
+            conn.on('open', function() {
+                addLogEntry(`Peer ${peerId} connected`, 'connect');
+                voteData.peers.set(peerId, null);
+
+                // Send current vote data to the new peer
+                conn.send({
+                    type: 'vote-data',
+                    data: {
+                        left: voteData.left,
+                        right: voteData.right
+                    }
+                });
+            });
+
+            conn.on('data', function(data) {
+                handlePeerData(peerId, data);
+            });
+
+            conn.on('close', function() {
+                addLogEntry(`Peer ${peerId} disconnected`, 'disconnect');
+                voteData.peers.delete(peerId);
+            });
+
+            conn.on('error', function(err) {
+                addLogEntry(`Error with peer ${peerId}: ${err}`, 'error');
+            });
+        });
+
+        peer.on('disconnected', function() {
+            updateConnectionStatus('Disconnected from server. Attempting to reconnect...', 'pending');
+            addLogEntry('Disconnected from PeerJS server. Attempting to reconnect...', 'error');
+
+            // Try to reconnect automatically
+            peer.reconnect();
+        });
+
+        peer.on('close', function() {
+            updateConnectionStatus('Connection closed', 'error');
+            addLogEntry('PeerJS connection closed', 'error');
+        });
+    }
+
+    // Function to handle data received from peers
+    function handlePeerData(peerId, data) {
+        if (data.type === 'vote') {
+            const vote = data.choice;
+            const previousVote = voteData.peers.get(peerId);
+
+            // If this peer already voted, subtract their previous vote
+            if (previousVote) {
+                if (previousVote === 'left') voteData.left--;
+                else if (previousVote === 'right') voteData.right--;
+            }
+
+            // Record their new vote
+            voteData.peers.set(peerId, vote);
+
+            // Add to the vote count
+            if (vote === 'left') voteData.left++;
+            else if (vote === 'right') voteData.right++;
+
+            addLogEntry(`Peer ${peerId} voted: ${vote}`, 'vote');
+            updateVoteDisplay();
+        }
+    }
 
     // Function to update the vote display
     function updateVoteDisplay() {
@@ -87,6 +233,20 @@ document.addEventListener('DOMContentLoaded', function() {
         voteData.peers.clear();
         updateVoteDisplay();
         addLogEntry('Votes have been reset by admin', 'connect');
+
+        // Notify all connected peers about the reset
+        if (peer && peer.connections) {
+            Object.keys(peer.connections).forEach(peerId => {
+                const conns = peer.connections[peerId];
+                conns.forEach(conn => {
+                    if (conn.open) {
+                        conn.send({
+                            type: 'vote-reset'
+                        });
+                    }
+                });
+            });
+        }
     }
 
     // Function to export vote data
@@ -127,9 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Simulate some peer connections and votes for demonstration
-    // This will be replaced with actual P2P functionality later
-    simulatePeerActivity();
-
+    // This function exists but is not called automatically
     function simulatePeerActivity() {
         // Simulate initial peers
         setTimeout(() => {
@@ -186,7 +344,4 @@ document.addEventListener('DOMContentLoaded', function() {
             voteData.peers.delete(peerId);
         }, 15000);
     }
-
-    // Add a note about future P2P implementation
-    addLogEntry('Note: This is a simulation. P2P functionality will be implemented later.', '');
 });
