@@ -10,36 +10,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Check if user has already voted and update UI accordingly
     function checkPreviousVote() {
-        const previousChoice = localStorage.getItem(VOTE_CHOICE_KEY);
-        const previousTimestamp = localStorage.getItem(VOTE_TIMESTAMP_KEY);
+        const previousChoice = getVoteChoice();
+        const remainingCooldown = getRemainingCooldownTime();
 
-        if (previousChoice && previousTimestamp) {
-            const currentTime = new Date().getTime();
-            const timeSinceLastVote = currentTime - parseInt(previousTimestamp);
-
-            if (timeSinceLastVote < VOTE_COOLDOWN) {
+        if (previousChoice) {
+            if (remainingCooldown > 0) {
                 // User voted within cooldown period
                 disableButtons();
-                const timeLeft = Math.ceil((VOTE_COOLDOWN - timeSinceLastVote) / 60000);
-                MESSAGE_ELEM.innerHTML = `Você já votou. Poderá votar novamente em ${timeLeft} minuto(s).`;
+                const timeLeft = formatTimeRemaining(remainingCooldown);
+                MESSAGE_ELEM.innerHTML = `Você já votou. Poderá votar novamente em ${timeLeft}.`;
                 MESSAGE_ELEM.classList.add('show');
-
-                // Highlight the previously selected button
-                if (previousChoice === 'left') {
-                    BTN_LEFT_ELEM.classList.add('selected');
-                } else if (previousChoice === 'right') {
-                    BTN_RIGHT_ELEM.classList.add('selected');
-                }
             } else {
                 // Cooldown period has passed
                 enableButtons();
+            }
 
-                // Still highlight the previously selected button
-                if (previousChoice === 'left') {
-                    BTN_LEFT_ELEM.classList.add('selected');
-                } else if (previousChoice === 'right') {
-                    BTN_RIGHT_ELEM.classList.add('selected');
-                }
+            // Highlight the previously selected button
+            if (previousChoice === 'left') {
+                BTN_LEFT_ELEM.classList.add('selected');
+            } else if (previousChoice === 'right') {
+                BTN_RIGHT_ELEM.classList.add('selected');
             }
         }
     }
@@ -106,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         BTN_RIGHT_ELEM.classList.remove('selected');
         BTN_LEFT_ELEM.classList.add('selected');
 
-        if (canVote() || localStorage.getItem(VOTE_CHOICE_KEY) !== 'left') {
+        if (canVote() || getVoteChoice() !== 'left') {
             saveVote('left');
             showMessage();
             disableButtons();
@@ -129,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         BTN_LEFT_ELEM.classList.remove('selected');
         BTN_RIGHT_ELEM.classList.add('selected');
 
-        if (canVote() || localStorage.getItem(VOTE_CHOICE_KEY) !== 'right') {
+        if (canVote() || getVoteChoice() !== 'right') {
             saveVote('right');
             showMessage();
             disableButtons();

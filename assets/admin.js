@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         left: 0,
         right: 0,
         peers: new Map(), // Will store peer IDs and their votes
-        adminId: generateAdminId() // Generate a constant admin ID
+        adminId: generateUniqueId('admin') // Use shared function instead of generateAdminId
     };
 
     // Initialize admin peer ID display
@@ -30,13 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
     exportDataBtn.addEventListener('click', exportVoteData);
     clearLogBtn.addEventListener('click', clearLog);
     exportLogBtn.addEventListener('click', exportLog);
-
-    // Function to generate a constant admin ID
-    function generateAdminId() {
-        // For now, we'll use a hardcoded ID
-        // In a real P2P implementation, this would be generated or retrieved from storage
-        return 'admin-futuros-' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-    }
 
     // Function to update the vote display
     function updateVoteDisplay() {
@@ -131,20 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         downloadData(logText, 'futuros-peer-log.txt', 'text/plain');
         addLogEntry('Log exported', 'connect');
-    }
-
-    // Helper function to download data
-    function downloadData(data, filename, type) {
-        const blob = new Blob([data], { type: type });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
     }
 
     // Simulate some peer connections and votes for demonstration
