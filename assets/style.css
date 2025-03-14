@@ -110,6 +110,17 @@ h1 {
     transform: translateY(0);
 }
 
+.btn.selected {
+    background-color: var(--blood-red);
+    box-shadow: 0 0 15px var(--blood-red);
+    color: white;
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 .message {
     font-size: 1.5rem;
     margin-top: 2rem;

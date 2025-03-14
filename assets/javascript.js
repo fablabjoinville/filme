@@ -3,6 +3,75 @@ document.addEventListener('DOMContentLoaded', function() {
     const BTN_RIGHT_ELEM = document.getElementById('btnRight');
     const MESSAGE_ELEM = document.getElementById('message');
 
+    // Constants for localStorage keys
+    const VOTE_CHOICE_KEY = 'futuros_vote_choice';
+    const VOTE_TIMESTAMP_KEY = 'futuros_vote_timestamp';
+    const VOTE_COOLDOWN = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+    // Check if user has already voted and update UI accordingly
+    function checkPreviousVote() {
+        const previousChoice = localStorage.getItem(VOTE_CHOICE_KEY);
+        const previousTimestamp = localStorage.getItem(VOTE_TIMESTAMP_KEY);
+
+        if (previousChoice && previousTimestamp) {
+            const currentTime = new Date().getTime();
+            const timeSinceLastVote = currentTime - parseInt(previousTimestamp);
+
+            if (timeSinceLastVote < VOTE_COOLDOWN) {
+                // User voted within cooldown period
+                disableButtons();
+                const timeLeft = Math.ceil((VOTE_COOLDOWN - timeSinceLastVote) / 60000);
+                MESSAGE_ELEM.innerHTML = `Você já votou. Poderá votar novamente em ${timeLeft} minuto(s).`;
+                MESSAGE_ELEM.classList.add('show');
+
+                // Highlight the previously selected button
+                if (previousChoice === 'left') {
+                    BTN_LEFT_ELEM.classList.add('selected');
+                } else if (previousChoice === 'right') {
+                    BTN_RIGHT_ELEM.classList.add('selected');
+                }
+            } else {
+                // Cooldown period has passed
+                enableButtons();
+
+                // Still highlight the previously selected button
+                if (previousChoice === 'left') {
+                    BTN_LEFT_ELEM.classList.add('selected');
+                } else if (previousChoice === 'right') {
+                    BTN_RIGHT_ELEM.classList.add('selected');
+                }
+            }
+        }
+    }
+
+    function disableButtons() {
+        BTN_LEFT_ELEM.disabled = true;
+        BTN_RIGHT_ELEM.disabled = true;
+    }
+
+    function enableButtons() {
+        BTN_LEFT_ELEM.disabled = false;
+        BTN_RIGHT_ELEM.disabled = false;
+    }
+
+    function saveVote(choice) {
+        localStorage.setItem(VOTE_CHOICE_KEY, choice);
+        localStorage.setItem(VOTE_TIMESTAMP_KEY, new Date().getTime().toString());
+    }
+
+    function canVote() {
+        const previousTimestamp = localStorage.getItem(VOTE_TIMESTAMP_KEY);
+
+        if (!previousTimestamp) {
+            return true;
+        }
+
+        const currentTime = new Date().getTime();
+        const timeSinceLastVote = currentTime - parseInt(previousTimestamp);
+
+        return timeSinceLastVote >= VOTE_COOLDOWN;
+    }
+
     // Add blood drips randomly
     function addBloodDrips() {
         const CONTAINER_ELEM = document.querySelector('.container');
@@ -28,29 +97,58 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add more blood drips periodically
     setInterval(addBloodDrips, 8000);
 
+    // Check for previous votes when page loads
+    checkPreviousVote();
+
     // Button click handlers
     BTN_LEFT_ELEM.addEventListener('click', function() {
-        showMessage();
+        // Remove previous selection styling
+        BTN_RIGHT_ELEM.classList.remove('selected');
+        BTN_LEFT_ELEM.classList.add('selected');
 
-        // Add screen shake effect
-        document.body.classList.add('shake');
-        setTimeout(() => {
-            document.body.classList.remove('shake');
-        }, 500);
+        if (canVote() || localStorage.getItem(VOTE_CHOICE_KEY) !== 'left') {
+            saveVote('left');
+            showMessage();
+            disableButtons();
+
+            // Re-enable buttons after cooldown
+            setTimeout(() => {
+                enableButtons();
+            }, VOTE_COOLDOWN);
+
+            // Add screen shake effect
+            document.body.classList.add('shake');
+            setTimeout(() => {
+                document.body.classList.remove('shake');
+            }, 500);
+        }
     });
 
     BTN_RIGHT_ELEM.addEventListener('click', function() {
-        showMessage();
+        // Remove previous selection styling
+        BTN_LEFT_ELEM.classList.remove('selected');
+        BTN_RIGHT_ELEM.classList.add('selected');
 
-        // Add flicker effect
-        const flickerEffect = setInterval(() => {
-            document.body.style.opacity = Math.random() < 0.5 ? '0.7' : '1';
-        }, 100);
+        if (canVote() || localStorage.getItem(VOTE_CHOICE_KEY) !== 'right') {
+            saveVote('right');
+            showMessage();
+            disableButtons();
 
-        setTimeout(() => {
-            clearInterval(flickerEffect);
-            document.body.style.opacity = '1';
-        }, 1000);
+            // Re-enable buttons after cooldown
+            setTimeout(() => {
+                enableButtons();
+            }, VOTE_COOLDOWN);
+
+            // Add flicker effect
+            const flickerEffect = setInterval(() => {
+                document.body.style.opacity = Math.random() < 0.5 ? '0.7' : '1';
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(flickerEffect);
+                document.body.style.opacity = '1';
+            }, 1000);
+        }
     });
 
     function showMessage() {
