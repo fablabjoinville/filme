@@ -72,18 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateConnectionStatus('Connecting...');
 
         // Create a new peer with a random ID
-        peer = new Peer(generateUniqueId('user'), {
-            host: '0.peerjs.com',
-            key: 'futuros-filme',
-            secure: false,
-            port: 443,
-            path: '/',
-            debug: 1,
-            config: {
-                "iceServers": [{ "urls": "stun:stun2.1.google.com:19302" }],
-                'iceCandidatePoolSize': 10
-            }
-        });
+        peer = new Peer(generateUniqueId('user'), PEER_CONFIG);
 
         peer.on('open', function(id) {
             console.log('Connected to PeerJS with ID:', id);

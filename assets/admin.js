@@ -57,18 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function initPeer() {
         updateConnectionStatus('Connecting to PeerJS server...', 'pending');
 
-        peer = new Peer(voteData.adminId, {
-            host: '0.peerjs.com',
-            key: 'futuros-filme',
-            secure: false,
-            port: 443,
-            path: '/',
-            debug: 1,
-            config: {
-                "iceServers": [{ "urls": "stun:stun2.1.google.com:19302" }],
-                'iceCandidatePoolSize': 10
-            }
-        });
+        peer = new Peer(voteData.adminId, PEER_CONFIG);
 
         peer.on('open', function(id) {
             reconnectAttempts = 0;

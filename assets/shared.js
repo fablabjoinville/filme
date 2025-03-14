@@ -6,6 +6,26 @@ const VOTE_CHOICE_KEY = 'futuros_vote_choice';
 const VOTE_TIMESTAMP_KEY = 'futuros_vote_timestamp';
 const VOTE_COOLDOWN = 5 * 60 * 1000; // 5 minutes in milliseconds
 
+// PeerJS Configuration
+const PEER_CONFIG = {
+    host: '0.peerjs.com',
+    key: 'futuros_filme',
+    secure: true,
+    port: 443,
+    path: '/',
+    debug: 1,
+    config: {
+        iceServers: [
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+            { urls: "stun:stun2.l.google.com:19302" },
+            { urls: "stun:stun3.l.google.com:19302" },
+            { urls: "stun:stun4.l.google.com:19302" }
+        ],
+        iceCandidatePoolSize: 10
+    }
+};
+
 // Helper function to download data
 function downloadData(data, filename, type) {
     const blob = new Blob([data], { type: type });
