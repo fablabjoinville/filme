@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Button click handlers
     btnLeft.addEventListener('click', function() {
-        message.innerHTML = "O destino de Lian foi escolhido.";
         showMessage();
 
         // Add screen shake effect
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     btnRight.addEventListener('click', function() {
-        message.innerHTML = "O destino de Lian foi escolhido.";
         showMessage();
 
         // Add flicker effect
@@ -56,6 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function showMessage() {
+        // Set the message text
+        message.innerHTML = "O destino de Lian foi escolhido.";
+
         // Clear previous message styling
         message.className = 'message';
         void message.offsetWidth; // Trigger reflow
