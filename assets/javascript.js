@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const VOTE_COOLDOWN = 5 * 60 * 1000; // 5 minutes in milliseconds
 
     // PeerJS variables
-    const ADMIN_PEER_ID = 'futuros-admin-dashboard';
     let peer = null;
     let conn = null;
     let peerId = null;

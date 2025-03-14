@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         left: 0,
         right: 0,
         peers: new Map(), // Will store peer IDs and their votes
-        adminId: 'futuros-admin-dashboard' // Constant admin ID
+        adminId: ADMIN_PEER_ID // Using shared constant
     };
 
     // Initialize PeerJS

@@ -1,6 +1,7 @@
 // Shared utility functions for Futuros application
 
 // Constants
+const ADMIN_PEER_ID = 'futuros_filme';
 const VOTE_CHOICE_KEY = 'futuros_vote_choice';
 const VOTE_TIMESTAMP_KEY = 'futuros_vote_timestamp';
 const VOTE_COOLDOWN = 5 * 60 * 1000; // 5 minutes in milliseconds
