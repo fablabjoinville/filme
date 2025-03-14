@@ -3,6 +3,8 @@
     --dark-shadow: #1a0000;
     --pale-skin: #f8f0e3;
     --eerie-glow: #ff6b6b;
+    --dark-bg: rgba(20, 20, 20, 0.7);
+    --semi-transparent-bg: rgba(0, 0, 0, 0.7);
 }
 
 * {
@@ -36,7 +38,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--semi-transparent-bg);
     z-index: -1;
 }
 
@@ -84,24 +86,36 @@ h1 {
     }
 }
 
+.btn, .admin-btn {
+    background-color: transparent;
+    color: var(--pale-skin);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-color: var(--blood-red);
+}
+
 .btn {
     padding: 15px 30px;
     font-size: 1.2rem;
     font-family: inherit;
     text-transform: uppercase;
     letter-spacing: 2px;
-    background-color: transparent;
-    color: var(--pale-skin);
-    border: 2px solid var(--blood-red);
-    cursor: pointer;
-    transition: all 0.3s ease;
+    border: 2px solid;
     position: relative;
     overflow: hidden;
     min-width: 200px;
 }
 
-.btn:hover {
+.admin-btn {
+    padding: 10px 15px;
+    border: 1px solid;
+}
+
+.btn:hover, .admin-btn:hover {
     background-color: var(--blood-red);
+}
+
+.btn:hover {
     box-shadow: 0 0 20px var(--blood-red);
     transform: translateY(-3px);
 }
@@ -126,7 +140,7 @@ h1 {
     margin-top: 2rem;
     padding: 20px;
     border: 1px solid var(--blood-red);
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--semi-transparent-bg);
     max-width: 600px;
     opacity: 0;
     transition: opacity 1s ease;
@@ -180,4 +194,147 @@ footer {
 
 .shake {
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Admin Dashboard Styles */
+.admin-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+.admin-header {
+    grid-column: 1 / span 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--blood-red);
+}
+
+.admin-header h1 {
+    margin-bottom: 0;
+}
+
+.admin-panel {
+    background-color: var(--semi-transparent-bg);
+    border: 1px solid var(--blood-red);
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.vote-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.vote-count {
+    text-align: center;
+    padding: 15px;
+    background-color: var(--dark-bg);
+    border-radius: 5px;
+    min-width: 150px;
+}
+
+.vote-count h3 {
+    margin-bottom: 10px;
+    color: var(--pale-skin);
+}
+
+.vote-count .count {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--eerie-glow);
+}
+
+.vote-chart {
+    height: 40px;
+    background-color: #333;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 20px;
+}
+
+.vote-chart-fill {
+    height: 100%;
+    background-color: var(--blood-red);
+    width: 50%; /* Will be updated by JS */
+    transition: width 0.5s ease;
+}
+
+.vote-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px black;
+}
+
+.log-container {
+    height: 400px;
+    overflow-y: auto;
+    background-color: var(--dark-bg);
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.log-entry {
+    margin-bottom: 5px;
+    padding: 5px;
+    border-bottom: 1px solid #333;
+}
+
+.log-entry.connect {
+    color: #4CAF50;
+}
+
+.log-entry.disconnect {
+    color: #F44336;
+}
+
+.log-entry.vote {
+    color: #2196F3;
+}
+
+.log-entry .timestamp {
+    color: #aaa;
+    margin-right: 10px;
+}
+
+.admin-controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.peer-id {
+    font-family: monospace;
+    padding: 10px;
+    background-color: var(--dark-bg);
+    border-radius: 5px;
+    margin-top: 10px;
+    word-break: break-all;
+}
+
+@media (max-width: 768px) {
+    .admin-container {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-header {
+        grid-column: 1;
+        flex-direction: column;
+        text-align: center;
+    }
 }
