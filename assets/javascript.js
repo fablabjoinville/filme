@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Button click handlers
     btnLeft.addEventListener('click', function() {
-        message.innerHTML = "The door creaks as you descend into darkness. The air grows colder with each step. Something watches from the shadows... waiting. <strong>You won't be leaving this place.</strong>";
+        message.innerHTML = "O destino de Lian foi escolhido.";
         showMessage();
 
         // Add screen shake effect
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     btnRight.addEventListener('click', function() {
-        message.innerHTML = "Your legs carry you as fast as they can, but the fog thickens around you. The path seems to loop back to where you started. <strong>There is no escape from this nightmare.</strong>";
+        message.innerHTML = "O destino de Lian foi escolhido.";
         showMessage();
 
         // Add flicker effect
