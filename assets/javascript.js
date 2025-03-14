@@ -74,9 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Create a new peer with a random ID
         peer = new Peer(generateUniqueId('user'), {
-          host: '0.peerjs.com',
-          key: 'futuros-filme',
-            secure: true,
+            host: '0.peerjs.com',
+            key: 'futuros-filme',
+            secure: false,
             port: 443,
             path: '/',
             debug: 1,

@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         peer = new Peer(voteData.adminId, {
             host: '0.peerjs.com',
             key: 'futuros-filme',
-            secure: true,
+            secure: false,
             port: 443,
             path: '/',
             debug: 1,
