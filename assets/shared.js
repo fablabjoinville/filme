@@ -10,7 +10,7 @@ const VOTE_COOLDOWN = 5 * 60 * 1000; // 5 minutes in milliseconds
 const PEER_CONFIG = {
     host: '0.peerjs.com',
     key: 'futuros_filme',
-    secure: true,
+    secure: false,
     port: 443,
     path: '/',
     debug: 1,
