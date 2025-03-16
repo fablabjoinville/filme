@@ -50,7 +50,13 @@ body::before {
     z-index: 1;
 }
 
+@font-face {
+    font-family: 'Squartiqa';
+    src: url('fonts/Squartiqa.ttf') format('truetype');
+}
+
 h1 {
+    font-family: 'Squartiqa', 'Courier New', monospace;
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
