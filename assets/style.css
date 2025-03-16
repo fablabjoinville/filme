@@ -1,5 +1,5 @@
 :root {
-    --primary-orange: #FF6B4A;
+    --primary-orange: #f15d3d;
     --dark-blue: #0A1A2A;
     --blue-tint: #1E3A5A;
     --light-blue: #4A9FFF;
@@ -7,7 +7,7 @@
     --pale-skin: #f8f0e3;
     --eerie-glow: #ff6b6b;
     --dark-bg: rgba(20, 20, 20, 0.7);
-    --semi-transparent-bg: rgba(10, 26, 42, 0.85);
+    --semi-transparent-bg: rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -59,13 +59,12 @@ body::before {
 }
 
 h1 {
-    font-family: 'Arial', sans-serif;
-    font-size: 4rem;
+    font-family: 'Squartiqa', sans-serif;
+    font-size: clamp(4rem, 10vw, 8rem);
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 5px;
     color: var(--primary-orange);
-    text-shadow: 0 0 15px rgba(255, 107, 74, 0.5);
     animation: none;
     font-weight: bold;
 }
@@ -120,7 +119,6 @@ h1 {
 .btn:hover, .admin-btn:hover {
     background-color: var(--primary-orange);
     color: var(--dark-blue);
-    box-shadow: 0 0 20px rgba(255, 107, 74, 0.4);
 }
 
 .btn:active {
@@ -129,7 +127,6 @@ h1 {
 
 .btn.selected {
     background-color: var(--primary-orange);
-    box-shadow: 0 0 15px var(--primary-orange);
     color: var(--dark-blue);
 }
 
