@@ -1,10 +1,13 @@
 :root {
-    --blood-red: #8a0303;
-    --dark-shadow: #1a0000;
+    --primary-orange: #FF6B4A;
+    --dark-blue: #0A1A2A;
+    --blue-tint: #1E3A5A;
+    --light-blue: #4A9FFF;
+    --dark-shadow: #000810;
     --pale-skin: #f8f0e3;
     --eerie-glow: #ff6b6b;
     --dark-bg: rgba(20, 20, 20, 0.7);
-    --semi-transparent-bg: rgba(0, 0, 0, 0.7);
+    --semi-transparent-bg: rgba(10, 26, 42, 0.85);
 }
 
 * {
@@ -14,9 +17,9 @@
 }
 
 body {
-    font-family: 'Courier New', monospace;
-    background-color: black;
-    color: var(--pale-skin);
+    font-family: 'Arial', sans-serif;
+    background-color: var(--dark-blue);
+    color: #ffffff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -56,26 +59,24 @@ body::before {
 }
 
 h1 {
-    font-family: 'Squartiqa', 'Courier New', monospace;
-    font-size: 2.5rem;
+    font-family: 'Arial', sans-serif;
+    font-size: 4rem;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    color: var(--blood-red);
-    text-shadow: 0 0 10px var(--eerie-glow), 0 0 20px var(--eerie-glow);
-    animation: pulse 4s infinite;
-}
-
-@keyframes pulse {
-    0% { text-shadow: 0 0 10px var(--eerie-glow), 0 0 20px var(--eerie-glow); }
-    50% { text-shadow: 0 0 15px var(--eerie-glow), 0 0 30px var(--eerie-glow); }
-    100% { text-shadow: 0 0 10px var(--eerie-glow), 0 0 20px var(--eerie-glow); }
+    letter-spacing: 5px;
+    color: var(--primary-orange);
+    text-shadow: 0 0 15px rgba(255, 107, 74, 0.5);
+    animation: none;
+    font-weight: bold;
 }
 
 .subtitle {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     margin-bottom: 3rem;
-    opacity: 0.8;
+    opacity: 0.9;
+    color: var(--primary-orange);
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .buttons {
@@ -94,10 +95,10 @@ h1 {
 
 .btn, .admin-btn {
     background-color: transparent;
-    color: var(--pale-skin);
+    color: var(--primary-orange);
     cursor: pointer;
     transition: all 0.3s ease;
-    border-color: var(--blood-red);
+    border: 2px solid var(--primary-orange);
 }
 
 .btn {
@@ -106,7 +107,6 @@ h1 {
     font-family: inherit;
     text-transform: uppercase;
     letter-spacing: 2px;
-    border: 2px solid;
     position: relative;
     overflow: hidden;
     min-width: 200px;
@@ -118,12 +118,9 @@ h1 {
 }
 
 .btn:hover, .admin-btn:hover {
-    background-color: var(--blood-red);
-}
-
-.btn:hover {
-    box-shadow: 0 0 20px var(--blood-red);
-    transform: translateY(-3px);
+    background-color: var(--primary-orange);
+    color: var(--dark-blue);
+    box-shadow: 0 0 20px rgba(255, 107, 74, 0.4);
 }
 
 .btn:active {
@@ -131,9 +128,9 @@ h1 {
 }
 
 .btn.selected {
-    background-color: var(--blood-red);
-    box-shadow: 0 0 15px var(--blood-red);
-    color: white;
+    background-color: var(--primary-orange);
+    box-shadow: 0 0 15px var(--primary-orange);
+    color: var(--dark-blue);
 }
 
 .btn:disabled {
@@ -145,8 +142,9 @@ h1 {
     font-size: 1.5rem;
     margin-top: 2rem;
     padding: 20px;
-    border: 1px solid var(--blood-red);
+    border: 1px solid var(--primary-orange);
     background-color: var(--semi-transparent-bg);
+    color: var(--primary-orange);
     max-width: 600px;
     opacity: 0;
     transition: opacity 1s ease;
@@ -158,18 +156,7 @@ h1 {
 }
 
 .blood-drip {
-    position: absolute;
-    top: 0;
-    width: 10px;
-    height: 0;
-    background-color: var(--blood-red);
-    animation: drip 3s ease-in forwards;
-    z-index: -1;
-}
-
-@keyframes drip {
-    0% { height: 0; }
-    100% { height: 100px; }
+    display: none;
 }
 
 .flicker {
@@ -220,7 +207,7 @@ footer {
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--blood-red);
+    border-bottom: 1px solid var(--primary-orange);
 }
 
 .admin-header h1 {
@@ -229,7 +216,7 @@ footer {
 
 .admin-panel {
     background-color: var(--semi-transparent-bg);
-    border: 1px solid var(--blood-red);
+    border: 1px solid var(--primary-orange);
     padding: 20px;
     border-radius: 5px;
 }
@@ -243,7 +230,7 @@ footer {
 .vote-count {
     text-align: center;
     padding: 15px;
-    background-color: var(--dark-bg);
+    background-color: var(--blue-tint);
     border-radius: 5px;
     min-width: 150px;
 }
@@ -256,7 +243,7 @@ footer {
 .vote-count .count {
     font-size: 2.5rem;
     font-weight: bold;
-    color: var(--eerie-glow);
+    color: var(--primary-orange);
 }
 
 .vote-chart {
@@ -270,7 +257,7 @@ footer {
 
 .vote-chart-fill {
     height: 100%;
-    background-color: var(--blood-red);
+    background-color: var(--primary-orange);
     width: 50%; /* Will be updated by JS */
     transition: width 0.5s ease;
 }
@@ -343,4 +330,10 @@ footer {
         flex-direction: column;
         text-align: center;
     }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
 }
