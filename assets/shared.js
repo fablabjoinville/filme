@@ -50,8 +50,3 @@ function getRemainingCooldownTime() {
 function formatTimeRemaining(milliseconds) {
     return Math.ceil(milliseconds / 60000) + ' minuto(s)';
 }
-
-// Generate a unique ID with a prefix
-function generateUniqueId(prefix) {
-    return prefix + '-futuros-' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-}

@@ -5,26 +5,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const voteChartFillElem = document.getElementById('voteChartFill');
     const votePercentageElem = document.getElementById('votePercentage');
     const peerLogElem = document.getElementById('peerLog');
-    const adminPeerIdElem = document.getElementById('adminPeerId');
-    const resetVotesBtn = document.getElementById('resetVotesBtn');
     const clearLogBtn = document.getElementById('clearLogBtn');
 
     // Vote tracking
     let voteData = {
         left: 0,
         right: 0,
-        peers: new Map(), // Will store peer IDs and their votes
-        adminId: generateUniqueId('admin') // Use shared function instead of generateAdminId
+        peers: new Map() // Will store peer IDs and their votes
     };
 
-    // Initialize admin peer ID display
-    adminPeerIdElem.textContent = voteData.adminId;
-
     // Add initial log entry with timestamp
-    addLogEntry('Admin dashboard initialized with ID: ' + voteData.adminId);
+    addLogEntry('Admin dashboard initialized');
 
     // Event listeners for buttons
-    resetVotesBtn.addEventListener('click', resetVotes);
     clearLogBtn.addEventListener('click', clearLog);
 
     // Function to update the vote display
@@ -74,15 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Auto-scroll to bottom
         peerLogElem.scrollTop = peerLogElem.scrollHeight;
-    }
-
-    // Function to reset votes
-    function resetVotes() {
-        voteData.left = 0;
-        voteData.right = 0;
-        voteData.peers.clear();
-        updateVoteDisplay();
-        addLogEntry('Votes have been reset by admin', 'connect');
     }
 
     // Function to clear log
