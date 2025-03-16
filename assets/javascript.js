@@ -62,31 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return timeSinceLastVote >= VOTE_COOLDOWN;
     }
 
-    // Add blood drips randomly
-    function addBloodDrips() {
-        const CONTAINER_ELEM = document.querySelector('.container');
-        const numDrips = Math.floor(Math.random() * 5) + 3;
-
-        for (let i = 0; i < numDrips; i++) {
-            const drip = document.createElement('div');
-            drip.classList.add('blood-drip');
-            drip.style.left = `${Math.random() * 100}%`;
-            drip.style.animationDelay = `${Math.random() * 2}s`;
-            CONTAINER_ELEM.appendChild(drip);
-
-            // Remove drip after animation
-            setTimeout(() => {
-                drip.remove();
-            }, 5000);
-        }
-    }
-
-    // Add initial blood drips
-    addBloodDrips();
-
-    // Add more blood drips periodically
-    setInterval(addBloodDrips, 8000);
-
     // Check for previous votes when page loads
     checkPreviousVote();
 
@@ -145,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
         resetMessageElement();
         animateMessage();
         typeWriterEffect();
-        playHeartbeatSound();
     }
 
     function resetMessageElement() {
@@ -174,11 +148,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearInterval(typeWriter);
             }
         }, typeSpeed);
-    }
-
-    function playHeartbeatSound() {
-        const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-horror-deep-drum-heartbeat-518.mp3');
-        audio.volume = 0.3;
-        audio.play().catch(e => console.log('Audio play failed:', e));
     }
 });

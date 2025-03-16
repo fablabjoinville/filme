@@ -7,9 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const peerLogElem = document.getElementById('peerLog');
     const adminPeerIdElem = document.getElementById('adminPeerId');
     const resetVotesBtn = document.getElementById('resetVotesBtn');
-    const exportDataBtn = document.getElementById('exportDataBtn');
     const clearLogBtn = document.getElementById('clearLogBtn');
-    const exportLogBtn = document.getElementById('exportLogBtn');
 
     // Vote tracking
     let voteData = {
@@ -27,9 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event listeners for buttons
     resetVotesBtn.addEventListener('click', resetVotes);
-    exportDataBtn.addEventListener('click', exportVoteData);
     clearLogBtn.addEventListener('click', clearLog);
-    exportLogBtn.addEventListener('click', exportLog);
 
     // Function to update the vote display
     function updateVoteDisplay() {
@@ -89,21 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
         addLogEntry('Votes have been reset by admin', 'connect');
     }
 
-    // Function to export vote data
-    function exportVoteData() {
-        const dataStr = JSON.stringify({
-            timestamp: new Date().toISOString(),
-            votes: {
-                left: voteData.left,
-                right: voteData.right
-            },
-            peerCount: voteData.peers.size
-        }, null, 2);
-
-        downloadData(dataStr, 'futuros-vote-data.json', 'application/json');
-        addLogEntry('Vote data exported', 'connect');
-    }
-
     // Function to clear log
     function clearLog() {
         // Keep only the first entry (initialization)
@@ -111,19 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
             peerLogElem.removeChild(peerLogElem.lastChild);
         }
         addLogEntry('Log cleared by admin', 'connect');
-    }
-
-    // Function to export log
-    function exportLog() {
-        let logText = '';
-        peerLogElem.childNodes.forEach(node => {
-            if (node.textContent) {
-                logText += node.textContent + '\n';
-            }
-        });
-
-        downloadData(logText, 'futuros-peer-log.txt', 'text/plain');
-        addLogEntry('Log exported', 'connect');
     }
 
     // Simulate some peer connections and votes for demonstration

@@ -179,10 +179,6 @@ p {
     opacity: 1;
 }
 
-.blood-drip {
-    display: none;
-}
-
 .flicker {
     animation: flicker 5s infinite alternate;
 }
