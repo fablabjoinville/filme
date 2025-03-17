@@ -15,6 +15,24 @@ async function saveVote(voting, choice) {
       return false;
     }
 
+    // Check if user has already voted on this voting
+    const { data: existingVotes, error: checkError } = await supabase
+      .from('votes')
+      .select('*')
+      .eq('user_id', userData.user.id)
+      .eq('voting', voting);
+
+    if (checkError) {
+      console.error('Error checking existing votes:', checkError.message);
+      return false;
+    }
+
+    // If user has already voted on this voting, don't allow another vote
+    if (existingVotes && existingVotes.length > 0) {
+      console.log('User has already voted on this voting');
+      return { alreadyVoted: true };
+    }
+
     // Save vote to the votes table
     const { data, error } = await supabase
       .from('votes')
@@ -33,7 +51,7 @@ async function saveVote(voting, choice) {
     }
 
     console.log('Vote saved successfully');
-    return true;
+    return { success: true };
   } catch (error) {
     console.error('Unexpected error saving vote:', error.message);
     return false;
@@ -100,6 +118,36 @@ function updateFooterWithUserInfo(user) {
   }
 }
 
+// Function to check if user has already voted on a specific voting
+async function hasUserVoted(voting) {
+  try {
+    // Get current user
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData || !userData.user) {
+      console.error('No authenticated user found');
+      return false;
+    }
+
+    // Check if user has already voted on this voting
+    const { data: existingVotes, error } = await supabase
+      .from('votes')
+      .select('*')
+      .eq('user_id', userData.user.id)
+      .eq('voting', voting);
+
+    if (error) {
+      console.error('Error checking existing votes:', error.message);
+      return false;
+    }
+
+    // Return true if user has already voted
+    return existingVotes && existingVotes.length > 0;
+  } catch (error) {
+    console.error('Unexpected error checking votes:', error.message);
+    return false;
+  }
+}
+
 // Function to setup vote buttons
 function setupVoteButtons(pageName, leftBtn, rightBtn, messageDiv, leftText, rightText) {
   if (!leftBtn || !rightBtn || !messageDiv) {
@@ -107,12 +155,29 @@ function setupVoteButtons(pageName, leftBtn, rightBtn, messageDiv, leftText, rig
     return;
   }
 
+  // Check if user has already voted when page loads
+  hasUserVoted(pageName).then(alreadyVoted => {
+    if (alreadyVoted) {
+      messageDiv.textContent = 'Você já votou nesta questão.';
+      leftBtn.disabled = true;
+      rightBtn.disabled = true;
+    }
+  });
+
   leftBtn.addEventListener('click', async () => {
     const result = await saveVote(pageName, 'left');
-    if (result) {
+    if (result && result.success) {
       messageDiv.textContent = `Voto registrado: ${leftText}`;
+      // Disable both buttons after successful vote
+      leftBtn.disabled = true;
+      rightBtn.disabled = true;
       // Redirect or perform next action after vote
       // window.location.href = 'next-page.html';
+    } else if (result && result.alreadyVoted) {
+      messageDiv.textContent = 'Você já votou nesta questão.';
+      // Disable both buttons if already voted
+      leftBtn.disabled = true;
+      rightBtn.disabled = true;
     } else {
       messageDiv.textContent = 'Erro ao registrar voto. Tente novamente.';
     }
@@ -120,10 +185,18 @@ function setupVoteButtons(pageName, leftBtn, rightBtn, messageDiv, leftText, rig
 
   rightBtn.addEventListener('click', async () => {
     const result = await saveVote(pageName, 'right');
-    if (result) {
+    if (result && result.success) {
       messageDiv.textContent = `Voto registrado: ${rightText}`;
+      // Disable both buttons after successful vote
+      leftBtn.disabled = true;
+      rightBtn.disabled = true;
       // Redirect or perform next action after vote
       // window.location.href = 'next-page.html';
+    } else if (result && result.alreadyVoted) {
+      messageDiv.textContent = 'Você já votou nesta questão.';
+      // Disable both buttons if already voted
+      leftBtn.disabled = true;
+      rightBtn.disabled = true;
     } else {
       messageDiv.textContent = 'Erro ao registrar voto. Tente novamente.';
     }
