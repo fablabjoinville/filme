@@ -20,6 +20,14 @@
             <h1>FUTUROS</h1>
         </div>
 
+        <!-- Total Users Statistics Panel -->
+        <div class="admin-panel">
+            <h2>Estatísticas Gerais</h2>
+            <div style="text-align: center; font-size: 1.2rem; margin: 15px 0;">
+                Total de sessões de usuários: <span id="totalUserSessions" style="font-weight: bold;">0</span>
+            </div>
+        </div>
+
         <!-- First Vote Statistics Panel -->
         <div class="admin-panel">
             <h2>Primeiro voto</h2>
@@ -89,6 +97,9 @@
                 // Fetch and display voting data
                 fetchVotingData();
 
+                // Fetch total unique users
+                fetchTotalUsers();
+
                 // Set up real-time subscription for votes
                 setupRealtimeSubscription();
             } else {
@@ -110,6 +121,9 @@
                     // Fetch and display voting data
                     fetchVotingData();
 
+                    // Fetch total unique users
+                    fetchTotalUsers();
+
                     // Set up real-time subscription for votes
                     setupRealtimeSubscription();
                 } else if (event === 'SIGNED_OUT') {
@@ -119,6 +133,33 @@
                 }
             });
         });
+
+        // Function to fetch total number of unique users/sessions
+        async function fetchTotalUsers() {
+            try {
+                // Get current admin's email
+                const { data: { session } } = await supabase.auth.getSession();
+                const adminEmail = session?.user?.email;
+
+                // Get all users from the auth users table
+                const { data, error } = await supabase
+                    .from('auth.users')
+                    .select('id, email');
+
+                if (error) {
+                    console.error('Error fetching users:', error.message);
+                    return;
+                }
+
+                if (data) {
+                    // Filter out the admin user from the count
+                    const nonAdminUsers = data.filter(user => user.email !== adminEmail);
+                    document.getElementById('totalUserSessions').textContent = nonAdminUsers.length;
+                }
+            } catch (error) {
+                console.error('Unexpected error fetching users:', error.message);
+            }
+        }
 
         // Function to fetch all voting data from Supabase
         async function fetchVotingData() {
@@ -227,6 +268,9 @@
                 }, payload => {
                     // Fetch all data again when a new vote is received
                     fetchVotingData();
+
+                    // Refresh total users count
+                    fetchTotalUsers();
 
                     // Add the new vote to the log immediately
                     const vote = payload.new;
