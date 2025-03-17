@@ -25,5 +25,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="shared.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnLeft = document.getElementById('btnLeft');
+            const btnRight = document.getElementById('btnRight');
+            const messageDiv = document.getElementById('message');
+            const leftText = btnLeft.textContent;
+            const rightText = btnRight.textContent;
+
+            setupVoteButtons('dois', btnLeft, btnRight, messageDiv, leftText, rightText);
+        });
+    </script>
 </body>
 </html>

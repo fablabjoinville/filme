@@ -5,6 +5,41 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Initialize the Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Function to save a vote to Supabase
+async function saveVote(voting, choice) {
+  try {
+    // Get current user
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData || !userData.user) {
+      console.error('No authenticated user found');
+      return false;
+    }
+
+    // Save vote to the votes table
+    const { data, error } = await supabase
+      .from('votes')
+      .insert([
+        {
+          user_id: userData.user.id,
+          voting: voting,
+          choice: choice,
+          created_at: new Date().toISOString()
+        }
+      ]);
+
+    if (error) {
+      console.error('Error saving vote:', error.message);
+      return false;
+    }
+
+    console.log('Vote saved successfully');
+    return true;
+  } catch (error) {
+    console.error('Unexpected error saving vote:', error.message);
+    return false;
+  }
+}
+
 // Function to handle anonymous sign-in
 async function signInAnonymously() {
   try {
@@ -56,6 +91,36 @@ function updateFooterWithUserInfo(user) {
     userInfo.style.marginTop = '5px';
     footer.appendChild(userInfo);
   }
+}
+
+// Function to setup vote buttons
+function setupVoteButtons(pageName, leftBtn, rightBtn, messageDiv, leftText, rightText) {
+  if (!leftBtn || !rightBtn || !messageDiv) {
+    console.error('Required elements not found');
+    return;
+  }
+
+  leftBtn.addEventListener('click', async () => {
+    const result = await saveVote(pageName, 'left');
+    if (result) {
+      messageDiv.textContent = `Voto registrado: ${leftText}`;
+      // Redirect or perform next action after vote
+      // window.location.href = 'next-page.html';
+    } else {
+      messageDiv.textContent = 'Erro ao registrar voto. Tente novamente.';
+    }
+  });
+
+  rightBtn.addEventListener('click', async () => {
+    const result = await saveVote(pageName, 'right');
+    if (result) {
+      messageDiv.textContent = `Voto registrado: ${rightText}`;
+      // Redirect or perform next action after vote
+      // window.location.href = 'next-page.html';
+    } else {
+      messageDiv.textContent = 'Erro ao registrar voto. Tente novamente.';
+    }
+  });
 }
 
 // Initialize anonymous authentication on page load
