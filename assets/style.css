@@ -235,8 +235,7 @@ footer {
 }
 
 .admin-panel {
-    background-color: var(--semi-transparent-bg);
-    border: 1px solid var(--primary-orange);
+    background-color: var(--dark-blue);
     padding: 20px;
     border-radius: 5px;
 }
@@ -250,7 +249,7 @@ footer {
 .vote-count {
     text-align: center;
     padding: 15px;
-    background-color: var(--blue-tint);
+    background-color: transparent;
     border-radius: 5px;
     min-width: 150px;
 }

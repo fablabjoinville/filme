@@ -3,57 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FUTUROS - Admin Dashboard</title>
+    <title>FUTUROS</title>
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
     <div class="admin-container">
         <div class="admin-header">
-            <h1>FUTUROS - Admin Dashboard</h1>
-            <div>
-                <a href="index.html" class="admin-btn">Back to Home</a>
-            </div>
+            <h1>FUTUROS</h1>
         </div>
 
-        <!-- Vote Statistics Panel -->
+        <!-- First Vote Statistics Panel -->
         <div class="admin-panel">
-            <h2>Vote Statistics</h2>
+            <h2>Primeiro voto</h2>
             <div class="vote-stats">
                 <div class="vote-count">
-                    <h3>Option A</h3>
-                    <div class="count" id="leftVoteCount">0</div>
+                    <div class="count" id="firstLeftVoteCount">0</div>
                     <div>"Rodar o teste final e ir para casa"</div>
                 </div>
                 <div class="vote-count">
-                    <h3>Option B</h3>
-                    <div class="count" id="rightVoteCount">0</div>
+                    <div class="count" id="firstRightVoteCount">0</div>
                     <div>"Tomar um café e continuar trabalhando"</div>
                 </div>
             </div>
+        </div>
 
-            <div class="vote-chart">
-                <div class="vote-chart-fill" id="voteChartFill"></div>
-                <div class="vote-percentage" id="votePercentage">50% / 50%</div>
+        <!-- Second Vote Statistics Panel -->
+        <div class="admin-panel">
+            <h2>Segundo voto</h2>
+            <div class="vote-stats">
+                <div class="vote-count">
+                    <div class="count" id="secondLeftVoteCount">0</div>
+                    <div>"Tentar desligar o sistema"</div>
+                </div>
+                <div class="vote-count">
+                    <div class="count" id="secondRightVoteCount">0</div>
+                    <div>"Tentar se comunicar com a IA"</div>
+                </div>
             </div>
         </div>
 
-        <!-- Peer Events Log Panel -->
+        <!-- Events Log Panel -->
         <div class="admin-panel">
-            <h2>Peer Events Log</h2>
+            <h2>Log de eventos</h2>
             <div class="log-container" id="peerLog">
                 <div class="log-entry">
                     <span class="timestamp">[00:00:00]</span>
-                    <span>Admin dashboard initialized. Waiting for P2P connections...</span>
+                    <span>Sistema inicializado. Aguardando conexões...</span>
                 </div>
-            </div>
-            <div class="admin-controls">
-                <button class="admin-btn" id="clearLogBtn">Clear Log</button>
             </div>
         </div>
     </div>
 
     <footer>
-        &copy; 2025 Futuros - Admin Panel
+        &copy; 2025 Futuros
     </footer>
 </body>
 </html>
