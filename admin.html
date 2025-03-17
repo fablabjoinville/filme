@@ -25,11 +25,11 @@
             <h2>Primeiro voto</h2>
             <div class="vote-stats">
                 <div class="vote-count">
-                    <div class="count" id="firstLeftVoteCount">0</div>
+                    <div class="count" id="umLeftVoteCount">0</div>
                     <div>"Rodar o teste final e ir para casa"</div>
                 </div>
                 <div class="vote-count">
-                    <div class="count" id="firstRightVoteCount">0</div>
+                    <div class="count" id="umRightVoteCount">0</div>
                     <div>"Tomar um café e continuar trabalhando"</div>
                 </div>
             </div>
@@ -40,11 +40,11 @@
             <h2>Segundo voto</h2>
             <div class="vote-stats">
                 <div class="vote-count">
-                    <div class="count" id="secondLeftVoteCount">0</div>
+                    <div class="count" id="doisLeftVoteCount">0</div>
                     <div>"Tentar desligar o sistema"</div>
                 </div>
                 <div class="vote-count">
-                    <div class="count" id="secondRightVoteCount">0</div>
+                    <div class="count" id="doisRightVoteCount">0</div>
                     <div>"Tentar se comunicar com a IA"</div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
         <!-- Events Log Panel -->
         <div class="admin-panel">
             <h2>Log de eventos</h2>
-            <div class="log-container" id="peerLog">
+            <div class="log-container" id="eventLog">
                 <div class="log-entry">
                     <span class="timestamp">[00:00:00]</span>
                     <span>Sistema inicializado. Aguardando conexões...</span>
@@ -79,6 +79,12 @@
 
                 // Update footer with user info
                 updateFooterWithUserInfo(session.user);
+
+                // Fetch and display voting data
+                fetchVotingData();
+
+                // Set up real-time subscription for votes
+                setupRealtimeSubscription();
             } else {
                 // Show auth message
                 document.getElementById('admin-container').style.display = 'none';
@@ -94,6 +100,12 @@
 
                     // Update footer with user info
                     updateFooterWithUserInfo(session.user);
+
+                    // Fetch and display voting data
+                    fetchVotingData();
+
+                    // Set up real-time subscription for votes
+                    setupRealtimeSubscription();
                 } else if (event === 'SIGNED_OUT') {
                     // Hide admin content when signed out
                     document.getElementById('admin-container').style.display = 'none';
@@ -101,6 +113,133 @@
                 }
             });
         });
+
+        // Function to fetch all voting data from Supabase
+        async function fetchVotingData() {
+            try {
+                // Get all votes from the votes table
+                const { data, error } = await supabase
+                    .from('votes')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error fetching votes:', error.message);
+                    return;
+                }
+
+                if (data) {
+                    // Process the data and update the UI
+                    processVotingData(data);
+
+                    // Update the event log with the latest votes
+                    updateEventLog(data);
+                }
+            } catch (error) {
+                console.error('Unexpected error fetching votes:', error.message);
+            }
+        }
+
+        // Function to process voting data and update the UI
+        function processVotingData(votes) {
+            // Initialize counters
+            const counters = {
+                um: { left: 0, right: 0 },
+                dois: { left: 0, right: 0 }
+            };
+
+            // Count votes for each category
+            votes.forEach(vote => {
+                if (vote.voting === 'um') {
+                    if (vote.choice === 'left') counters.um.left++;
+                    else if (vote.choice === 'right') counters.um.right++;
+                } else if (vote.voting === 'dois') {
+                    if (vote.choice === 'left') counters.dois.left++;
+                    else if (vote.choice === 'right') counters.dois.right++;
+                }
+            });
+
+            // Update the UI with the counts
+            document.getElementById('umLeftVoteCount').textContent = counters.um.left;
+            document.getElementById('umRightVoteCount').textContent = counters.um.right;
+            document.getElementById('doisLeftVoteCount').textContent = counters.dois.left;
+            document.getElementById('doisRightVoteCount').textContent = counters.dois.right;
+        }
+
+        // Function to update the event log with vote data
+        function updateEventLog(votes) {
+            const logContainer = document.getElementById('eventLog');
+
+            // Clear existing log entries except the initial one
+            while (logContainer.children.length > 1) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+
+            // Add the most recent 20 votes to the log
+            votes.slice(0, 20).forEach(vote => {
+                const timestamp = new Date(vote.created_at);
+                const formattedTime = timestamp.toLocaleTimeString();
+
+                let choiceText = '';
+                if (vote.voting === 'um') {
+                    choiceText = vote.choice === 'left' ? 'Rodar o teste final e ir para casa' : 'Tomar um café e continuar trabalhando';
+                } else if (vote.voting === 'dois') {
+                    choiceText = vote.choice === 'left' ? 'Tentar desligar o sistema' : 'Tentar se comunicar com a IA';
+                }
+
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `
+                    <span class="timestamp">[${formattedTime}]</span>
+                    <span>Usuário ${vote.user_id.substring(0, 8)}... votou: ${choiceText}</span>
+                `;
+
+                logContainer.appendChild(logEntry);
+            });
+        }
+
+        // Function to set up real-time subscription for votes
+        function setupRealtimeSubscription() {
+            const subscription = supabase
+                .channel('public:votes')
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'votes'
+                }, payload => {
+                    // Fetch all data again when a new vote is received
+                    fetchVotingData();
+
+                    // Add the new vote to the log immediately
+                    const vote = payload.new;
+                    const timestamp = new Date(vote.created_at);
+                    const formattedTime = timestamp.toLocaleTimeString();
+
+                    let choiceText = '';
+                    if (vote.voting === 'um') {
+                        choiceText = vote.choice === 'left' ? 'Rodar o teste final e ir para casa' : 'Tomar um café e continuar trabalhando';
+                    } else if (vote.voting === 'dois') {
+                        choiceText = vote.choice === 'left' ? 'Tentar desligar o sistema' : 'Tentar se comunicar com a IA';
+                    }
+
+                    const logContainer = document.getElementById('eventLog');
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.innerHTML = `
+                        <span class="timestamp">[${formattedTime}]</span>
+                        <span>Usuário ${vote.user_id.substring(0, 8)}... votou: ${choiceText}</span>
+                    `;
+
+                    // Insert at the top of the log
+                    logContainer.insertBefore(logEntry, logContainer.firstChild.nextSibling);
+
+                    // Keep only the most recent 20 entries
+                    while (logContainer.children.length > 21) {
+                        logContainer.removeChild(logContainer.lastChild);
+                    }
+                })
+                .subscribe();
+        }
     </script>
 </body>
 </html>
