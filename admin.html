@@ -5,9 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FUTUROS</title>
     <link rel="stylesheet" href="assets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="shared.js"></script>
 </head>
 <body>
-    <div class="admin-container">
+    <div id="auth-container" style="display: none; text-align: center; padding: 50px;">
+        <h1>FUTUROS</h1>
+        <p>You need admin access to view this page.</p>
+        <p>Please check your email for a magic link or contact the administrator.</p>
+    </div>
+
+    <div id="admin-container" class="admin-container" style="display: none;">
         <div class="admin-header">
             <h1>FUTUROS</h1>
         </div>
@@ -58,7 +66,41 @@
         &copy; 2025 Futuros
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="shared.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if user is authenticated
+            const { data: { session } } = await supabase.auth.getSession();
+
+            // Check if user has a valid session and is authenticated with email
+            if (session && session.user && session.user.email) {
+                // Show admin content
+                document.getElementById('admin-container').style.display = 'block';
+                document.getElementById('auth-container').style.display = 'none';
+
+                // Update footer with user info
+                updateFooterWithUserInfo(session.user);
+            } else {
+                // Show auth message
+                document.getElementById('admin-container').style.display = 'none';
+                document.getElementById('auth-container').style.display = 'block';
+            }
+
+            // Handle auth state changes
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' && session && session.user && session.user.email) {
+                    // Show admin content when signed in
+                    document.getElementById('admin-container').style.display = 'block';
+                    document.getElementById('auth-container').style.display = 'none';
+
+                    // Update footer with user info
+                    updateFooterWithUserInfo(session.user);
+                } else if (event === 'SIGNED_OUT') {
+                    // Hide admin content when signed out
+                    document.getElementById('admin-container').style.display = 'none';
+                    document.getElementById('auth-container').style.display = 'block';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
