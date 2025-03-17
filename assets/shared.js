@@ -84,6 +84,13 @@ async function signOut() {
 function updateFooterWithUserInfo(user) {
   const footer = document.querySelector('footer');
   if (footer && user) {
+    // Remove any existing user-info elements
+    const existingUserInfo = footer.querySelector('.user-info');
+    if (existingUserInfo) {
+      footer.removeChild(existingUserInfo);
+    }
+
+    // Create and add the new user-info element
     const userInfo = document.createElement('div');
     userInfo.className = 'user-info';
     userInfo.innerHTML = `User ID: ${user.id} | Display Name: ${user.email || 'Anonymous'}`;
