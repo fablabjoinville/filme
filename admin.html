@@ -33,6 +33,9 @@
                     <div>"Tomar um café e continuar trabalhando"</div>
                 </div>
             </div>
+            <div class="user-stats" style="text-align: center; margin-top: 10px;">
+                <span id="umUniqueUsersCount">0</span> usuários já votaram
+            </div>
         </div>
 
         <!-- Second Vote Statistics Panel -->
@@ -47,6 +50,9 @@
                     <div class="count" id="doisRightVoteCount">0</div>
                     <div>"Tentar se comunicar com a IA"</div>
                 </div>
+            </div>
+            <div class="user-stats" style="text-align: center; margin-top: 10px;">
+                <span id="doisUniqueUsersCount">0</span> usuários já votaram
             </div>
         </div>
 
@@ -148,14 +154,22 @@
                 dois: { left: 0, right: 0 }
             };
 
+            // Track unique users for each voting
+            const uniqueUsers = {
+                um: new Set(),
+                dois: new Set()
+            };
+
             // Count votes for each category
             votes.forEach(vote => {
                 if (vote.voting === 'um') {
                     if (vote.choice === 'left') counters.um.left++;
                     else if (vote.choice === 'right') counters.um.right++;
+                    uniqueUsers.um.add(vote.user_id);
                 } else if (vote.voting === 'dois') {
                     if (vote.choice === 'left') counters.dois.left++;
                     else if (vote.choice === 'right') counters.dois.right++;
+                    uniqueUsers.dois.add(vote.user_id);
                 }
             });
 
@@ -164,6 +178,10 @@
             document.getElementById('umRightVoteCount').textContent = counters.um.right;
             document.getElementById('doisLeftVoteCount').textContent = counters.dois.left;
             document.getElementById('doisRightVoteCount').textContent = counters.dois.right;
+
+            // Update unique users count
+            document.getElementById('umUniqueUsersCount').textContent = uniqueUsers.um.size;
+            document.getElementById('doisUniqueUsersCount').textContent = uniqueUsers.dois.size;
         }
 
         // Function to update the event log with vote data
